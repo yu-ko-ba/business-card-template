@@ -1,0 +1,51 @@
+/* 裏表共通 */
+* {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+
+  box-sizing: border-box;
+}
+
+html {
+  width: 97mm;
+  height: 61mm;
+}
+
+#fill-erea {
+  padding: 3mm;
+
+  position: relative;
+}
+
+#finished-erea {
+  width: 91mm;
+  height: 55mm;
+
+  padding: 3mm;
+
+  position: relative;
+}
+
+#guaranteed-print-area {
+  width: 85mm;
+  height: 49mm;
+
+  padding: 0;
+
+  position: relative;
+}
+
+/* 表面 */
+#title {
+  font-size: 19px;
+}
+
+#name {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  font-size: 25px;
+}
