@@ -1,26 +1,192 @@
 <!doctype html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>名刺_表</title>
-  <link href="styles/style.css" rel="stylesheet" />
-  <link href="styles/guide.css" rel="stylesheet" />
+  <title>名刺</title>
+  
+  <style>
+    /* =========================================
+       1. 裏表共通のベーススタイル
+    ========================================= */
+    * {
+      margin: 0;
+      padding: 0;
+      line-height: 1.5;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #f5f5f5; /* プレビュー時のブラウザ背景 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      /* 汎用的なシステムフォントを指定（適宜変更してください） */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #333;
+    }
+
+    .card-container {
+      width: 97mm;
+      height: 61mm;
+      background-color: #ffffff; /* 名刺のベースカラー（白） */
+      position: relative;
+      overflow: hidden;
+      /* ブラウザプレビュー用の影（印刷時は消えます） */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* -----------------------------------------
+       名刺の領域定義（塗り足し・仕上がり・印字保証）
+    ----------------------------------------- */
+    .fill-area {
+      /* 塗り足しを含めたキャンバス全体 (97x61) */
+      padding: 3mm;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .finished-area {
+      /* 実際の仕上がりサイズ (91x55) */
+      width: 91mm;
+      height: 55mm;
+      padding: 3mm; /* ★ 元の美しい入れ子構造（padding）に戻しました */
+      position: relative;
+    }
+
+    .guaranteed-print-area {
+      /* 印字保証範囲 (85x49) */
+      width: 85mm;
+      height: 49mm;
+      /* margin指定を削除し、親のpaddingに委ねます */
+      position: relative;
+    }
+
+    /* =========================================
+       2. ガイド表示モード
+       body要素に class="guide-mode" をつけると表示されます
+       ★ outlineではなく、実際の要素の境界であるborderを適用！
+    ========================================= */
+    .guide-mode .finished-area {
+      border: 1px dashed rgba(220, 53, 69, 0.8); /* 赤: 裁断される仕上がり線 */
+    }
+    .guide-mode .finished-area::before {
+      content: "仕上がり線 (91x55mm)";
+      position: absolute;
+      top: 0; left: 1mm;
+      font-size: 6px;
+      color: rgba(220, 53, 69, 0.8);
+      pointer-events: none;
+    }
+    
+    .guide-mode .guaranteed-print-area {
+      border: 1px dashed rgba(0, 123, 255, 0.8); /* 青: テキストの安全地帯 */
+    }
+    .guide-mode .guaranteed-print-area::before {
+      content: "印字保証範囲 (85x49mm)";
+      position: absolute;
+      bottom: 0; right: 1mm;
+      font-size: 6px;
+      color: rgba(0, 123, 255, 0.8);
+      pointer-events: none;
+    }
+
+    /* =========================================
+       3. デザイン用サンプルスタイル
+       （ここから下は自由に書き換えてデザインしてください）
+    ========================================= */
+    .content-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .title {
+      font-size: 10px;
+      color: #666;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+
+    .name {
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    /* =========================================
+       4. PDF出力（印刷）用の必須設定
+    ========================================= */
+    @page {
+      size: 97mm 61mm;
+      margin: 0;
+    }
+
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        background-color: white;
+        padding: 0;
+        gap: 0;
+      }
+      .card-container {
+        page-break-after: always;
+        box-shadow: none !important;
+      }
+      /* 印刷時はガイドラインの枠線と文字を完全に消去する */
+      .fill-area, .finished-area, .guaranteed-print-area {
+        border: none !important;
+      }
+      .finished-area::before, .guaranteed-print-area::before {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 
-<body id="front">
-  <!-- 塗り足しを含めたサイズ -->
-  <div id="fill-erea">
-    <!-- 仕上がりサイズ -->
-    <div id="finished-erea">
-      <!-- 印字保証範囲 -->
-      <div id="guaranteed-print-area">
-        <span id="title">なにか肩書</span>
-        <span id="name">名前</span>
+<!-- ガイドを表示する場合は class="guide-mode" を付与し、消す時は外してください -->
+<body class="guide-mode">
+
+  <!-- ==============================
+       表面 (Front)
+  =============================== -->
+  <div class="card-container" id="front">
+    <div class="fill-area">
+      <div class="finished-area">
+        <div class="guaranteed-print-area">
+          
+          <!-- サンプルデザイン：中央寄せの肩書と名前 -->
+          <div class="content-wrapper">
+            <span class="title">肩書 / Role</span>
+            <span class="name">名前 / Name</span>
+          </div>
+          
+        </div>
       </div>
     </div>
   </div>
-</body>
 
+  <!-- ==============================
+       裏面 (Back)
+  =============================== -->
+  <div class="card-container" id="back">
+    <div class="fill-area">
+      <div class="finished-area">
+        <div class="guaranteed-print-area">
+          
+          <!-- 裏面のデザインを記述 -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
 </html>
